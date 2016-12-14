@@ -15,7 +15,7 @@ export class Arrow extends Component {
   }
 
   static defaultProps = {
-    className: '',
+    className: 'slick-arrow',
     disabledClassName: 'disabled'
   }
 
@@ -48,4 +48,21 @@ export class Arrow extends Component {
     )
   }
 
+}
+
+
+export function PrevArrow(props) {
+  return <Arrow {...props} to="prev"/>
+}
+PrevArrow.defaultProps = {
+  className: 'slick-arrow slick-prev',
+  to: 'prev'
+}
+
+export function NextArrow(props) {
+  return <Arrow {...props} />
+}
+NextArrow.defaultProps = {
+  className: 'slick-arrow slick-next',
+  to: 'next'
 }

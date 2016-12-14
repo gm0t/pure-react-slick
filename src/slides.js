@@ -1,5 +1,6 @@
 import React, { Component, PropTypes, Children, cloneElement } from 'react';
 
+// TODO: rename to swipe-slides
 
 export default class Slides extends Component {
   static propTypes = {

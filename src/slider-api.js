@@ -54,6 +54,7 @@ export default class SliderApi {
       transitionSpeed: this.transitionSpeed,
       transitionTimingFn: this.transitionTimingFn,
       currentSlide: this.currentSlide,
+      lastSlide: this.lastSlide,
       nextAllowed: this.isNextAllowed(),
       prevAllowed: this.isPrevAllowed()
     }
@@ -91,6 +92,7 @@ export default class SliderApi {
   configure(config) {
     this.infinite = config.infinite;
     this.currentSlide = config.currentSlide || 0;
+    this.lastSlide = this.currentSlide;
     this.slidesToShow = config.slidesToShow || 1;
     this.slidesToScroll = config.slidesToScroll || 1;
     this.transitionSpeed = config.transitionSpeed;
@@ -115,6 +117,7 @@ export default class SliderApi {
       }
     }
 
+    this.lastSlide = this.currentSlide;
     this.currentSlide = slide;
     this.animate = !dontAnimate;
     this.triggerChange();

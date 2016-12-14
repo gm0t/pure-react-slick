@@ -17,5 +17,5 @@ new WebpackDevServer(webpack(config), {
     console.log(err);
   }
 
-  console.log('Listening at localhost:3000');
+  console.log('\x1b[44m', 'server started at: ', '\x1b[4;44m', 'http://localhost:3000/', '\x1b[0m');
 });
