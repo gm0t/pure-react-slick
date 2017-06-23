@@ -1,1 +1,1 @@
-# pure-react-slick
+# react-slip
