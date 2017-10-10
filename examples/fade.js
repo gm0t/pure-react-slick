@@ -5,38 +5,37 @@ var Prev = () => <Arrow to="prev" className="arrow arrow-prev"/>;
 var Next = () => <Arrow to="next" className="arrow arrow-next"/>;
 var CDots = () => <Dots className="dots" activeClassName="dots__item_active"/>;
 
-var BasicSlides = () => {
+var BasicSlides = ({ version }) => {
+  var slide7 = version % 3 ? null : <div className="slides__item slides__item_even">lol</div>;
+
   return (
     <FadeSlides className="slides slides_css-animated slides_fade">
       <div className="slides__item slides__item_odd">1</div>
-      <div className="slides__item slides__item_even">2</div>
-      <div className="slides__item slides__item_odd">3</div>
-      <div className="slides__item slides__item_even">4</div>
-      <div className="slides__item slides__item_odd">5</div>
-      <div className="slides__item slides__item_even">6</div>
     </FadeSlides>
   );
 };
 
 export default class Fade extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { version: 0 }
+  }
+
   render() {
+    const version = this.state.version + 1;
     return (
       <div>
-        <h2>Single slide</h2>
-        <Slider className="slider slider_horizontal" infinite={false}>
+        <h2>Single slide </h2>
+        <Slider autoplaySpeed={1000} data-version={this.state.version} className="slider slider_horizontal">
           <Prev />
-          <BasicSlides />
+          <BasicSlides version={version}/>
           <Next />
           <CDots />
         </Slider>
-        <hr/>
-        <h2>Multiple slides with slidesToScroll</h2>
-        <Slider className="slider slider_horizontal" slidesToShow={2} slidesToScroll={2} infinite={false}>
-          <Prev />
-          <BasicSlides />
-          <Next />
-          <CDots />
-        </Slider>
+
+        <button onClick={() => this.setState({ version })}>
+          inc version: {version}
+        </button>
       </div>
     );
   }

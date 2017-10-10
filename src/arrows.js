@@ -1,15 +1,18 @@
-import React, { Component, PropTypes } from 'react';
+// @flow
 
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export class Arrow extends Component {
-  static propTypes = {
-    to: PropTypes.oneOf(['prev', 'next']).isRequired,
-    className: PropTypes.string,
-    disabledClassName: PropTypes.string
+  props: {
+    to: 'prev' | 'next',
+    className?: string,
+    disabledClassName?: string
   }
 
   static contextTypes = {
     listen: PropTypes.func.isRequired,
+    getState: PropTypes.func.isRequired,
     next: PropTypes.func.isRequired,
     prev: PropTypes.func.isRequired
   }
@@ -19,8 +22,13 @@ export class Arrow extends Component {
     disabledClassName: 'disabled'
   }
 
-  _isDisabled(to) {
-    return !this.state || !this.state[to + 'Allowed'];
+  constructor(props, context) {
+    super(props);
+    this.state = context.getState();
+  }
+
+  isDisabled(to) {
+    return !this.state || !this.state[`${to}Allowed`];
   }
 
   componentDidMount() {
@@ -28,41 +36,37 @@ export class Arrow extends Component {
   }
 
   componentWillUnmount() {
-    this.unbind()
+    this.unbind();
   }
 
   render() {
-    const { to, children, disabledClassName } = this.props;
-    const isDisabled = this._isDisabled(to);
-    const onClick = isDisabled ? null : this.context[to];
-
-    var className = this.props.className || '';
-    if (this._isDisabled(to)) {
-      className += ' ' + disabledClassName;
+    const { slidesCount } = this.state;
+    if (slidesCount <= 1) {
+      return null;
     }
 
+    const { to, children, className, disabledClassName } = this.props;
+    const isDisabled = this.isDisabled(to);
+    const onClick = isDisabled ? null : this.context[to];
+
     return (
-      <div className={className} onClick={onClick}>
+      <div className={`${className} ${isDisabled ? disabledClassName : ''}`} onClick={onClick}>
         {children}
       </div>
-    )
+    );
   }
 
 }
 
 
-export function PrevArrow(props) {
-  return <Arrow {...props} to="prev"/>
-}
+export const PrevArrow = props => <Arrow {...props} to="prev" />;
 PrevArrow.defaultProps = {
   className: 'slick-arrow slick-prev',
   to: 'prev'
-}
+};
 
-export function NextArrow(props) {
-  return <Arrow {...props} />
-}
+export const NextArrow = props => <Arrow {...props} />;
 NextArrow.defaultProps = {
   className: 'slick-arrow slick-next',
   to: 'next'
-}
+};

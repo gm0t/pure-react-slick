@@ -1,4 +1,23 @@
-import React, { Component, PropTypes, Children, cloneElement } from 'react';
+// @flow
+
+/* eslint no-bitwise: 0 */
+
+import React, { Component, Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
+
+const getIndexes = (slidesCount, index, slidesToShow) => {
+  const slides = [index];
+  let i = slidesToShow;
+  // eslint-disable-next-line no-plusplus
+  while (--i && slidesCount > i + index) {
+    slides.push(i + index);
+  }
+
+  return slides;
+};
+
+const getSlidesFromChildren = children => Children.toArray(children).filter(s => !!s);
+const slidesStyle = { width: '100%', height: '100%' };
 
 export default class FadeSlides extends Component {
   static propTypes = {
@@ -13,57 +32,45 @@ export default class FadeSlides extends Component {
   static defaultProps = {
   }
 
-  constructor() {
+  constructor(props, context) {
     super();
-    this.state = {};
-  }
-
-  componentDidUpdate() {
-    this.update
+    this.state = context.getState();
   }
 
   componentDidMount() {
-    this.setState(this.context.getState());
-    this.context.updateSlides(this.props.children);
+    this.context.updateSlides(getSlidesFromChildren(this.props.children));
     this.unbind = this.context.listen(state => this.setState(state));
+  }
+
+  componentWillReceiveProps({ children }) {
+    this.context.updateSlides(getSlidesFromChildren(children));
   }
 
   componentWillUnmount() {
     if (this.unbind) {
-      this.unbind()
+      this.unbind();
     }
   }
 
-  // renderers
-
   renderSlide(slide, idx, isPrev, isNext) {
-    const { slidesToShow, currentSlide } = this.state;
-    let style = slide.props.style || {};
-    style.width = this.state.slideWidth + 'px';
+    const { slidesToShow, currentSlide, slideWidth } = this.state;
+    const style = slide.props.style || {};
+    style.width = `${slideWidth}px`;
 
     let className = slide.props.className || '';
     if (isPrev || isNext) {
-      className += ' animation_' + (isNext ? 'in' : 'out');
+      className += ` animation_${isNext ? 'in' : 'out'}`;
+    }
+
+    if (isNext) {
+      className += ' slick-active';
     }
 
     if (slidesToShow > 1) {
-      className += ' position_' + (idx - currentSlide)
+      className += ` position_${(idx - currentSlide)}`;
     }
 
-    return cloneElement(slide, {
-      key: idx,
-      style: style,
-      className: className
-    });
-  }
-
-  getSlidesIndexes(slidesCount, index, slidesToShow) {
-    let slides = [index];
-    while (--slidesToShow && slidesCount > slidesToShow + index) {
-      slides.push(slidesToShow + index)
-    }
-
-    return slides;
+    return cloneElement(slide, { key: idx, style, className });
   }
 
   render() {
@@ -72,13 +79,14 @@ export default class FadeSlides extends Component {
     }
 
     const { slidesToShow, lastSlide, currentSlide } = this.state;
-    let children = Children.toArray(this.props.children);
-    let prev = lastSlide === currentSlide ? [] : this.getSlidesIndexes(children.length, lastSlide, slidesToShow);
-    let next = this.getSlidesIndexes(children.length, currentSlide, slidesToShow)
+    const slides = getSlidesFromChildren(this.props.children);
+    // eslint-disable-next-line max-len
+    const prev = lastSlide === currentSlide ? [] : getIndexes(slides.length, lastSlide, slidesToShow);
+    const next = getIndexes(slides.length, currentSlide, slidesToShow);
 
     return (
-      <div {...this.props} style={{width: '100%', height: '100%'}}>
-        {children.map((slide, i) => this.renderSlide(slide, i, ~prev.indexOf(i), ~next.indexOf(i)))}
+      <div {...this.props} style={slidesStyle}>
+        {slides.map((slide, i) => this.renderSlide(slide, i, ~prev.indexOf(i), ~next.indexOf(i)))}
       </div>
     );
   }

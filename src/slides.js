@@ -1,6 +1,18 @@
-import React, { Component, PropTypes, Children, cloneElement } from 'react';
+// @flow
+
+import React, { Component, Children, cloneElement } from 'react';
+import PropTypes from 'prop-types';
 
 // TODO: rename to swipe-slides
+
+const renderSlide = (slideWidth, slide, key) => {
+  const style = slide.props.style || {};
+  style.width = `${slideWidth}px`;
+  return cloneElement(slide, { key, style });
+};
+
+const renderClones = (pos, slides, width) =>
+  slides.map((slide, i) => renderSlide(width, slide, `c-${pos}${i}`));
 
 export default class Slides extends Component {
   static propTypes = {
@@ -15,57 +27,40 @@ export default class Slides extends Component {
   static defaultProps = {
   }
 
-  constructor() {
+  constructor(props, context) {
     super();
-    this.state = {};
+    this.state = context.getState();
   }
 
   componentDidUpdate() {
-    this.update
+    // TODO: update slides logic
   }
 
   componentDidMount() {
-    this.setState(this.context.getState());
     this.context.updateSlides(this.props.children);
     this.unbind = this.context.listen(state => this.setState(state));
   }
 
   componentWillUnmount() {
     if (this.unbind) {
-      this.unbind()
+      this.unbind();
     }
   }
 
   // helpers
 
   buildTrackTransform() {
-    const {vertical, offset} = this.state;
-    return 'translate3d(' + (vertical ? ('0px, ' + offset + 'px') : (offset + 'px, 0px')) + ', 0px)';
+    const { vertical, offset } = this.state;
+    const xy = vertical ? `0px, ${offset}px` : `${offset}px, 0px`;
+
+    return `translate3d(${xy}, 0px)`;
   }
 
   buildTrackTransition() {
     if (!this.state.animate) {
       return '';
     }
-
-    var speed = this.state.transitionSpeed / 1000;
-    return 'transform ' + speed + 's ease';
-  }
-
-  // renderers
-
-  renderSlide(slideWidth, slide, key) {
-    var style = slide.props.style || {};
-    style.width = slideWidth + 'px';
-
-    return cloneElement(slide, {
-      key: key,
-      style: style
-    })
-  }
-
-  renderClones(pos, slides, width) {
-    return slides.map((slide, i) => this.renderSlide(width, slide, 'c-' + pos + i))
+    return `transform ${this.state.transitionSpeed / 1000}s ease`;
   }
 
   render() {
@@ -74,27 +69,32 @@ export default class Slides extends Component {
     }
 
     const { containerWidth, slideWidth, infinite, slidesToShow, slidesToScroll } = this.state;
-    let children = Children.toArray(this.props.children);
-    let style = this.props.style || {};
-    style.width = children.length * containerWidth + (infinite ? slidesToShow * 2 * containerWidth : 0);
+    const slides = Children.toArray(this.props.children);
+    if (slides.length === 1) {
+      return this.props.children;
+    }
+
+    const style = this.props.style || {};
+    // eslint-disable-next-line max-len
+    style.width = (slides.length * containerWidth) + (infinite ? slidesToShow * 2 * containerWidth : 0);
     style.transform = this.buildTrackTransform();
     style.WebKitTransform = style.transform;
     style.transition = this.buildTrackTransition();
     style.WebkitTransition = style.transition;
 
-    let beforeClones, afterClones;
+    let beforeClones;
+    let afterClones;
     if (infinite) {
-      beforeClones = this.renderClones('b', children.slice(-Math.max(slidesToShow, slidesToScroll)), slideWidth);
-      afterClones = this.renderClones('a', children.slice(0, Math.max(slidesToShow, slidesToScroll)), slideWidth);
+      beforeClones = renderClones('b', slides.slice(-Math.max(slidesToShow, slidesToScroll)), slideWidth);
+      afterClones = renderClones('a', slides.slice(0, Math.max(slidesToShow, slidesToScroll)), slideWidth);
     }
 
     return (
       <div {...this.props} style={style}>
         {beforeClones}
-        {children.map((slide, i) => this.renderSlide(slideWidth, slide, i), this)}
+        {slides.map((slide, i) => renderSlide(slideWidth, slide, i), this)}
         {afterClones}
       </div>
-    )
+    );
   }
-
 }

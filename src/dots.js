@@ -1,11 +1,16 @@
-import React, { Component, PropTypes} from 'react';
-import sanitizeProps from './sanitize-props';
+// @flow
+
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class Dots extends Component {
+  props: {
+    activeClassName?: string
+  }
 
-  constructor() {
-    super();
-    this.state = {};
+  constructor(props, context) {
+    super(props, context);
+    this.state = context.getState();
   }
 
   static contextTypes = {
@@ -14,42 +19,47 @@ export default class Dots extends Component {
     goTo: PropTypes.func.isRequired
   }
 
-  static propTypes = {
-    activeClassName: PropTypes.string
-  }
-
   static defaultProps = {
     className: 'slick-dots',
     activeClassName: 'slick-active'
   }
 
   componentDidMount() {
-    this.setState(this.context.getState());
-    this.unbind = this.context.listen(state => this.setState(state));
+    this.unbind = this.context.listen(state => this.setState(() => state));
   }
 
   componentWillUnmount() {
     if (this.unbind) {
-      this.unbind()
+      this.unbind();
     }
   }
 
+  goToHandler = (e) => {
+    console.log('...', e.currentTarget.getAttribute('data-to'));
+    this.context.goTo(+e.currentTarget.getAttribute('data-to'));
+  }
+
   renderDot(i, isActive, toScroll) {
-    const className = isActive ? this.props.activeClassName : null
+    const className = isActive ? this.props.activeClassName : null;
 
     return (
-      <li key={i} onClick={() => this.context.goTo(i * toScroll)} className={className}>
+      <li key={i} data-to={i * toScroll} onClick={this.goToHandler} className={className}>
         <button>{i}</button>
       </li>
     );
   }
 
   render() {
-    let {slidesCount, slidesToScroll, slidesToShow, currentSlide, infinite} = this.state;
+    const { slidesCount, slidesToScroll, slidesToShow, infinite } = this.state;
+    if (slidesCount <= 1) {
+      return null;
+    }
 
+    const { activeClassName, ...ulProps } = this.props;
+    let currentSlide = this.state.currentSlide;
 
     if (currentSlide >= slidesCount) {
-      currentSlide = currentSlide - slidesCount;
+      currentSlide -= slidesCount;
     } else if (currentSlide < 0) {
       currentSlide = slidesCount + currentSlide;
     } else {
@@ -63,15 +73,16 @@ export default class Dots extends Component {
       dotsCount = 1 + Math.ceil((slidesCount - slidesToShow) / slidesToScroll);
     }
 
-    let dots = [], isActive, hasActive = false;
-    for (let i = 0; i < dotsCount; i += 1) {
-      isActive = !hasActive && (currentSlide >= i * slidesToScroll && currentSlide < ((i + 1) * slidesToScroll))
+    const dots = [];
+    for (let i = 0, isActive, hasActive; i < dotsCount; i += 1) {
+      // eslint-disable-next-line max-len
+      isActive = !hasActive && (currentSlide >= i * slidesToScroll && currentSlide < ((i + 1) * slidesToScroll));
       dots.push(this.renderDot(i, isActive, slidesToScroll));
       hasActive = hasActive || isActive;
     }
 
     return (
-      <ul {...sanitizeProps(this.props, Dots.propTypes)} >
+      <ul {...ulProps}>
         {dots}
       </ul>
     );
