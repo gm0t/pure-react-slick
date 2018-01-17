@@ -1,25 +1,16 @@
-import React, { Component, PropTypes, Children, cloneElement } from 'react';
+import React, { Component, Children, cloneElement } from 'react';
+import PropTypes from "prop-types";
 
 export default class FadeSlides extends Component {
-  static propTypes = {
-  }
-
   static contextTypes = {
     getState: PropTypes.func.isRequired,
     listen: PropTypes.func.isRequired,
     updateSlides: PropTypes.func.isRequired
-  }
-
-  static defaultProps = {
-  }
+  };
 
   constructor() {
     super();
     this.state = {};
-  }
-
-  componentDidUpdate() {
-    this.update
   }
 
   componentDidMount() {

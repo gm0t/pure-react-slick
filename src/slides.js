@@ -1,19 +1,19 @@
-import React, { Component, PropTypes, Children, cloneElement } from 'react';
-
+import React, { Component, Children, cloneElement } from 'react';
+import PropTypes from "prop-types";
 // TODO: rename to swipe-slides
 
 export default class Slides extends Component {
   static propTypes = {
-  }
+  };
 
   static contextTypes = {
     getState: PropTypes.func.isRequired,
     listen: PropTypes.func.isRequired,
     updateSlides: PropTypes.func.isRequired
-  }
+  };
 
   static defaultProps = {
-  }
+  };
 
   constructor() {
     super();
@@ -21,7 +21,7 @@ export default class Slides extends Component {
   }
 
   componentDidUpdate() {
-    this.update
+    // this.update
   }
 
   componentDidMount() {
@@ -48,20 +48,15 @@ export default class Slides extends Component {
       return '';
     }
 
-    var speed = this.state.transitionSpeed / 1000;
-    return 'transform ' + speed + 's ease';
+    return `transform ${this.state.transitionSpeed / 1000}s ease`;
   }
 
   // renderers
-
   renderSlide(slideWidth, slide, key) {
-    var style = slide.props.style || {};
+    const style = slide.props.style || {};
     style.width = slideWidth + 'px';
 
-    return cloneElement(slide, {
-      key: key,
-      style: style
-    })
+    return cloneElement(slide, { key, style })
   }
 
   renderClones(pos, slides, width) {

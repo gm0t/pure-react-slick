@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
 import SliderApi from './slider-api';
 import sanitizeProps from './sanitize-props';
 
@@ -10,11 +11,49 @@ export default class Slider extends Component {
     next: PropTypes.func,
     listen: PropTypes.func,
     updateSlides: PropTypes.func
-  }
+  };
+
+  static propTypes = {
+    // basic params
+    infinite: PropTypes.bool,
+    slidesToShow: PropTypes.number,
+    slidesToScroll: PropTypes.number,
+    vertical: PropTypes.bool,
+    transitionSpeed: PropTypes.number,
+    transitionTimingFn: PropTypes.string,
+    swipe: PropTypes.bool,
+    draggable: PropTypes.bool,
+    edgeFriction: PropTypes.number,
+    touchThreshold: PropTypes.number,
+    touchMove: PropTypes.bool,
+    autoPlay: PropTypes.bool,
+    autoPlaySpeed: PropTypes.number,
+
+    // event handlers
+    beforeChange: PropTypes.func,
+    afterChange: PropTypes.func
+  };
+
+  static defaultProps = {
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    infinite: true,
+    vertical: false,
+    transitionSpeed: 300,
+    transitionTimingFn: 'linear',
+    swipe: true,
+    draggable: true,
+    edgeFriction: 0.15,
+    touchThreshold: 5,
+    touchMove: true,
+    autoPlay: false,
+    autoPlaySpeed: 2000
+  };
+
 
   componentDidMount() {
-    var container = this.refs.container;
-    this.api.updateContainer(container.offsetWidth, container.offsetHeight);
+    const { offsetWidth, offsetHeight } = this.refs.container;
+    this.api.updateContainer(offsetWidth, offsetHeight);
   }
 
   buildNewApi() {
@@ -40,45 +79,8 @@ export default class Slider extends Component {
     this.api.configure(nprops);
   }
 
-  static propTypes = {
-    // basic params
-    infinite: PropTypes.bool,
-    slidesToShow: PropTypes.number,
-    slidesToScroll: PropTypes.number,
-    vertical: PropTypes.bool,
-    transitionSpeed: PropTypes.number,
-    transitionTimingFn: PropTypes.string,
-    swipe: PropTypes.bool,
-    draggable: PropTypes.bool,
-    edgeFriction: PropTypes.number,
-    touchThreshold: PropTypes.number,
-    touchMove: PropTypes.bool,
-    autoPlay: PropTypes.bool,
-    autoPlaySpeed: PropTypes.number,
-
-    // event handlers
-    beforeChange: PropTypes.func,
-    afterChange: PropTypes.func
-  }
-
-  static defaultProps = {
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    infinite: true,
-    vertical: false,
-    transitionSpeed: 300,
-    transitionTimingFn: 'linear',
-    swipe: true,
-    draggable: true,
-    edgeFriction: 0.15,
-    touchThreshold: 5,
-    touchMove: true,
-    autoPlay: false,
-    autoPlaySpeed: 2000
-  }
-
   render() {
-    var divProps = sanitizeProps(this.props, Slider.propTypes);
+    const divProps = sanitizeProps(this.props, Slider.propTypes);
     return (
       <div {...divProps} ref="container">
         {this.props.children}

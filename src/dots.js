@@ -1,4 +1,5 @@
-import React, { Component, PropTypes} from 'react';
+import React, { Component } from 'react';
+import PropTypes from "prop-types";
 import sanitizeProps from './sanitize-props';
 
 export default class Dots extends Component {
@@ -12,16 +13,16 @@ export default class Dots extends Component {
     getState: PropTypes.func.isRequired,
     listen: PropTypes.func.isRequired,
     goTo: PropTypes.func.isRequired
-  }
+  };
 
   static propTypes = {
     activeClassName: PropTypes.string
-  }
+  };
 
   static defaultProps = {
     className: 'slick-dots',
     activeClassName: 'slick-active'
-  }
+  };
 
   componentDidMount() {
     this.setState(this.context.getState());

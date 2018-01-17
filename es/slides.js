@@ -12,6 +12,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _propTypes = require('prop-types');
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -37,7 +41,7 @@ var Slides = function (_Component) {
   _createClass(Slides, [{
     key: 'componentDidUpdate',
     value: function componentDidUpdate() {
-      this.update;
+      // this.update
     }
   }, {
     key: 'componentDidMount',
@@ -76,8 +80,7 @@ var Slides = function (_Component) {
         return '';
       }
 
-      var speed = this.state.transitionSpeed / 1000;
-      return 'transform ' + speed + 's ease';
+      return 'transform ' + this.state.transitionSpeed / 1000 + 's ease';
     }
 
     // renderers
@@ -88,10 +91,7 @@ var Slides = function (_Component) {
       var style = slide.props.style || {};
       style.width = slideWidth + 'px';
 
-      return (0, _react.cloneElement)(slide, {
-        key: key,
-        style: style
-      });
+      return (0, _react.cloneElement)(slide, { key: key, style: style });
     }
   }, {
     key: 'renderClones',
@@ -150,9 +150,9 @@ var Slides = function (_Component) {
 
 Slides.propTypes = {};
 Slides.contextTypes = {
-  getState: _react.PropTypes.func.isRequired,
-  listen: _react.PropTypes.func.isRequired,
-  updateSlides: _react.PropTypes.func.isRequired
+  getState: _propTypes2.default.func.isRequired,
+  listen: _propTypes2.default.func.isRequired,
+  updateSlides: _propTypes2.default.func.isRequired
 };
 Slides.defaultProps = {};
 exports.default = Slides;
