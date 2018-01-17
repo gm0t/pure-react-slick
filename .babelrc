@@ -1,4 +1,11 @@
 {
-  "presets": ["es2015-loose", "stage-0", "react"],
-  "plugins": ["react-hot-loader/babel"]
+  "presets": ["es2015", "react", "stage-0"],
+  "env": {
+    "cjs": {
+      "plugins": ["add-module-exports"]
+    },
+    "test": {
+      "plugins": ["rewire-exports", "transform-decorators-legacy"]
+    }
+  }
 }

@@ -2,30 +2,29 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-  context: __dirname + '/examples',
-  devtool: '#eval-source-map',
-  entry: [
-    'webpack-dev-server/client?http://localhost:3000',
-    'webpack/hot/only-dev-server',
-    'react-hot-loader/patch',
-    './index'
-  ],
   output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/static/'
+    library: 'ReactSlip',
+    libraryTarget: 'umd'
   },
   plugins: [
-    new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    }),
+    new webpack.optimize.OccurenceOrderPlugin()
   ],
-  resolve: {
-    alias: {
-      'react-slip': path.join(__dirname, 'src')
+  externals: {
+    'react': {
+      root: 'React',
+      commonjs2: 'react',
+      commonjs: 'react',
+      amd: 'react'
     },
-    root: path.resolve('./app'),
-    extensions: ['', '.js']
+    'react-dom': {
+      root: 'ReactDOM',
+      commonjs2: 'react-dom',
+      commonjs: 'react-dom',
+      amd: 'react-dom'
+    }
   },
   module: {
     loaders: [
