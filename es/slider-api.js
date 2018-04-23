@@ -104,6 +104,9 @@ var SliderApi = function () {
   }, {
     key: "updateContainer",
     value: function updateContainer(width, height) {
+      if (this.containerHeight === height && this.containerWidth === width) {
+        return;
+      }
       this.containerWidth = width;
       this.containerHeight = height;
       this.updateSlideSize();

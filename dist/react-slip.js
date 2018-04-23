@@ -993,6 +993,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: "updateContainer",
 	    value: function updateContainer(width, height) {
+	      if (this.containerHeight === height && this.containerWidth === width) {
+	        return;
+	      }
 	      this.containerWidth = width;
 	      this.containerHeight = height;
 	      this.updateSlideSize();
@@ -1200,10 +1203,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function componentDidMount() {
 	      (0, _events.listen)(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
 	      this.updateContainerSize();
+	      if (this.props.containerCheckInterval > 0) {
+	        this.containerWatchInterval = window.setInterval(this.updateContainerSize, this.props.containerCheckInterval);
+	      }
 	    }
 	  }, {
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
+	      window.clearInterval(this.containerWatchInterval);
 	      unlisten(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
 	    }
 	  }, {
@@ -1280,6 +1287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  touchMove: _propTypes2.default.bool,
 	  autoPlay: _propTypes2.default.bool,
 	  autoPlaySpeed: _propTypes2.default.number,
+	  containerCheckInterval: _propTypes2.default.number,
 	  forceContainerUpdate: _propTypes2.default.any,
 
 	  // event handlers
@@ -1299,7 +1307,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  touchThreshold: 5,
 	  touchMove: true,
 	  autoPlay: false,
-	  autoPlaySpeed: 2000
+	  autoPlaySpeed: 2000,
+	  containerCheckInterval: 400
 	};
 	exports.default = Slider;
 

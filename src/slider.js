@@ -29,6 +29,7 @@ export default class Slider extends Component {
     touchMove: PropTypes.bool,
     autoPlay: PropTypes.bool,
     autoPlaySpeed: PropTypes.number,
+    containerCheckInterval: PropTypes.number,
     forceContainerUpdate: PropTypes.any,
 
     // event handlers
@@ -49,7 +50,8 @@ export default class Slider extends Component {
     touchThreshold: 5,
     touchMove: true,
     autoPlay: false,
-    autoPlaySpeed: 2000
+    autoPlaySpeed: 2000,
+    containerCheckInterval: 400
   };
 
   updateContainerSize = () => {
@@ -61,9 +63,13 @@ export default class Slider extends Component {
   componentDidMount() {
     listen(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
     this.updateContainerSize();
+    if (this.props.containerCheckInterval > 0) {
+      this.containerWatchInterval = window.setInterval(this.updateContainerSize, this.props.containerCheckInterval)
+    }
   }
 
   componentWillUnmount() {
+    window.clearInterval(this.containerWatchInterval);
     unlisten(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
   }
 
