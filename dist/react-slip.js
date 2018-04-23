@@ -1194,7 +1194,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	          offsetHeight = _this$refs$container.offsetHeight;
 
 	      _this.api.updateContainer(offsetWidth, offsetHeight);
-	      console.log('update container size');
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
@@ -1211,7 +1210,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      window.clearInterval(this.containerWatchInterval);
-	      unlisten(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
+	      (0, _events.unlisten)(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
 	    }
 	  }, {
 	    key: 'componentDidUpdate',

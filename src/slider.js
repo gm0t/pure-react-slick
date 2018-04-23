@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import SliderApi from './slider-api';
 import sanitizeProps from './sanitize-props';
-import {listen} from "./helpers/events";
+import { listen, unlisten } from "./helpers/events";
 
 export default class Slider extends Component {
   static childContextTypes = {
@@ -57,7 +57,6 @@ export default class Slider extends Component {
   updateContainerSize = () => {
     const { offsetWidth, offsetHeight } = this.refs.container;
     this.api.updateContainer(offsetWidth, offsetHeight);
-    console.log('update container size')
   };
 
   componentDidMount() {
