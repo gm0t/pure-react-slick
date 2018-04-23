@@ -83,6 +83,7 @@ var Dots = function (_Component) {
           slidesToShow = _state.slidesToShow,
           currentSlide = _state.currentSlide,
           infinite = _state.infinite;
+      var children = this.props.children;
 
 
       if (currentSlide >= slidesCount) {
@@ -102,11 +103,17 @@ var Dots = function (_Component) {
 
       var dots = [],
           isActive = void 0,
-          hasActive = false;
+          activeDot = false;
       for (var i = 0; i < dotsCount; i += 1) {
-        isActive = !hasActive && currentSlide >= i * slidesToScroll && currentSlide < (i + 1) * slidesToScroll;
+        isActive = activeDot === false && currentSlide >= i * slidesToScroll && currentSlide < (i + 1) * slidesToScroll;
         dots.push(this.renderDot(i, isActive, slidesToScroll));
-        hasActive = hasActive || isActive;
+        if (isActive) {
+          activeDot = i;
+        }
+      }
+
+      if (typeof children === 'function') {
+        return children({ currentSlide: currentSlide, activeDot: activeDot, dotsCount: dotsCount, dots: dots });
       }
 
       return _react2.default.createElement(

@@ -47,7 +47,7 @@ export default class Dots extends Component {
 
   render() {
     let {slidesCount, slidesToScroll, slidesToShow, currentSlide, infinite} = this.state;
-
+    const { children } = this.props;
 
     if (currentSlide >= slidesCount) {
       currentSlide = currentSlide - slidesCount;
@@ -64,11 +64,18 @@ export default class Dots extends Component {
       dotsCount = 1 + Math.ceil((slidesCount - slidesToShow) / slidesToScroll);
     }
 
-    let dots = [], isActive, hasActive = false;
+
+    let dots = [], isActive, activeDot = false;
     for (let i = 0; i < dotsCount; i += 1) {
-      isActive = !hasActive && (currentSlide >= i * slidesToScroll && currentSlide < ((i + 1) * slidesToScroll))
+      isActive = activeDot === false && (currentSlide >= i * slidesToScroll && currentSlide < ((i + 1) * slidesToScroll))
       dots.push(this.renderDot(i, isActive, slidesToScroll));
-      hasActive = hasActive || isActive;
+      if (isActive) {
+        activeDot = i;
+      }
+    }
+
+    if (typeof children === 'function') {
+      return children({ currentSlide, activeDot, dotsCount, dots });
     }
 
     return (

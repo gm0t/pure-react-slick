@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from "prop-types";
 import SliderApi from './slider-api';
 import sanitizeProps from './sanitize-props';
+import {listen} from "./helpers/events";
 
 export default class Slider extends Component {
   static childContextTypes = {
@@ -28,6 +29,7 @@ export default class Slider extends Component {
     touchMove: PropTypes.bool,
     autoPlay: PropTypes.bool,
     autoPlaySpeed: PropTypes.number,
+    forceContainerUpdate: PropTypes.any,
 
     // event handlers
     beforeChange: PropTypes.func,
@@ -50,10 +52,26 @@ export default class Slider extends Component {
     autoPlaySpeed: 2000
   };
 
-
-  componentDidMount() {
+  updateContainerSize = () => {
     const { offsetWidth, offsetHeight } = this.refs.container;
     this.api.updateContainer(offsetWidth, offsetHeight);
+    console.log('update container size')
+  };
+
+  componentDidMount() {
+    listen(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
+    this.updateContainerSize();
+  }
+
+  componentWillUnmount() {
+    unlisten(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
+  }
+
+  componentDidUpdate(prevProps) {
+    const currentProps = this.props;
+    if (prevProps.forceContainerUpdate !== currentProps.forceContainerUpdate) {
+      this.updateContainerSize()
+    }
   }
 
   buildNewApi() {

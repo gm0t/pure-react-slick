@@ -61,7 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.Dots = exports.FadeSlides = exports.Slides = exports.Slider = exports.NextArrow = exports.PrevArrow = exports.Arrow = undefined;
 
-	var _arrows = __webpack_require__(8);
+	var _arrows = __webpack_require__(9);
 
 	Object.defineProperty(exports, 'Arrow', {
 	  enumerable: true,
@@ -82,19 +82,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	});
 
-	var _slider = __webpack_require__(13);
+	var _slider = __webpack_require__(14);
 
 	var _slider2 = _interopRequireDefault(_slider);
 
-	var _slides = __webpack_require__(14);
+	var _slides = __webpack_require__(15);
 
 	var _slides2 = _interopRequireDefault(_slides);
 
-	var _fadeSlides = __webpack_require__(11);
+	var _fadeSlides = __webpack_require__(12);
 
 	var _fadeSlides2 = _interopRequireDefault(_fadeSlides);
 
-	var _dots = __webpack_require__(10);
+	var _dots = __webpack_require__(11);
 
 	var _dots2 = _interopRequireDefault(_dots);
 
@@ -131,11 +131,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // By explicitly using `prop-types` you are opting into new development behavior.
 	  // http://fb.me/prop-types-in-prod
 	  var throwOnDirectAccess = true;
-	  module.exports = __webpack_require__(18)(isValidElement, throwOnDirectAccess);
+	  module.exports = __webpack_require__(19)(isValidElement, throwOnDirectAccess);
 	} else {
 	  // By explicitly using `prop-types` you are opting into new production behavior.
 	  // http://fb.me/prop-types-in-prod
-	  module.exports = __webpack_require__(17)();
+	  module.exports = __webpack_require__(18)();
 	}
 
 
@@ -264,6 +264,110 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.listen = listen;
+	exports.unlisten = unlisten;
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Small helpers that provide an easy and effecient way to add/remove event listeners //
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	var elementsWithListeners = [],
+	    registeredListeners = [];
+
+	function addListener(el, event, cb) {
+	  var idx = elementsWithListeners.indexOf(el);
+	  if (idx === -1) {
+	    idx = elementsWithListeners.length;
+	    elementsWithListeners.push(el);
+	    registeredListeners.push({ el: el, totalCount: 0 });
+	  }
+
+	  var listeners = registeredListeners[idx],
+	      listener = listeners[event];
+
+	  if (!listener) {
+	    listener = listeners[event] = { callbacks: [] };
+	    listener.cb = function (e) {
+	      for (var i = 0, l = listener.callbacks.length; i < l; i += 1) {
+	        listener.callbacks[i](e);
+	      }
+	    };
+	    listeners.totalCount += 1;
+	    listeners.el.addEventListener(event, listener.cb);
+	  }
+
+	  // just to prevent double listeners
+	  if (listener.callbacks.indexOf(cb) !== -1) {
+	    return;
+	  }
+
+	  listener.callbacks.push(cb);
+	}
+
+	function removeListener(el, event, cb) {
+	  var idx = elementsWithListeners.indexOf(el);
+	  if (idx === -1) {
+	    return;
+	  }
+
+	  var listeners = registeredListeners[idx],
+	      listener = listeners[event],
+	      callbacks = listener ? listener.callbacks : [];
+
+	  if (!listener || callbacks.indexOf(cb) === -1) {
+	    return;
+	  }
+
+	  callbacks.splice(callbacks.indexOf(cb), 1);
+	  if (callbacks.length > 0) {
+	    return;
+	  }
+
+	  listeners.el.removeEventListener(event, listener.cb);
+	  listeners.totalCount -= 1;
+	  delete listeners[event];
+
+	  if (listeners.totalCount > 0) {
+	    return;
+	  }
+
+	  elementsWithListeners.splice(idx, 1);
+	  registeredListeners.splice(idx, 1);
+	}
+
+	/**
+	 * Subscribe cb to events list
+	 * @param  {HTMLElement}   el       target element
+	 * @param  {Array}         events   array of event names
+	 * @param  {Function} cb   callback that should be called
+	 */
+	function listen(el, events, cb) {
+	  for (var i = 0, l = events.length; i < l; i += 1) {
+	    addListener(el, events[i], cb);
+	  }
+	}
+
+	/**
+	 * Unsubscribe cb from events list
+	 * @param  {HTMLElement}   el       target element
+	 * @param  {Array}         events   array of event names
+	 * @param  {Function} cb   callback that should be unsubscribed
+	 */
+
+	function unlisten(el, events, cb) {
+	  for (var i = 0, l = events.length; i < l; i += 1) {
+	    removeListener(el, events[i], cb);
+	  }
+	}
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -273,7 +377,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.default = sanitizeProps;
 
-	var _assign = __webpack_require__(9);
+	var _assign = __webpack_require__(10);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -291,7 +395,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -358,7 +462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = warning;
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -477,7 +581,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -497,7 +601,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -516,7 +620,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _sanitizeProps = __webpack_require__(6);
+	var _sanitizeProps = __webpack_require__(7);
 
 	var _sanitizeProps2 = _interopRequireDefault(_sanitizeProps);
 
@@ -585,6 +689,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	          slidesToShow = _state.slidesToShow,
 	          currentSlide = _state.currentSlide,
 	          infinite = _state.infinite;
+	      var children = this.props.children;
 
 
 	      if (currentSlide >= slidesCount) {
@@ -604,11 +709,17 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var dots = [],
 	          isActive = void 0,
-	          hasActive = false;
+	          activeDot = false;
 	      for (var i = 0; i < dotsCount; i += 1) {
-	        isActive = !hasActive && currentSlide >= i * slidesToScroll && currentSlide < (i + 1) * slidesToScroll;
+	        isActive = activeDot === false && currentSlide >= i * slidesToScroll && currentSlide < (i + 1) * slidesToScroll;
 	        dots.push(this.renderDot(i, isActive, slidesToScroll));
-	        hasActive = hasActive || isActive;
+	        if (isActive) {
+	          activeDot = i;
+	        }
+	      }
+
+	      if (typeof children === 'function') {
+	        return children({ currentSlide: currentSlide, activeDot: activeDot, dotsCount: dotsCount, dots: dots });
 	      }
 
 	      return _react2.default.createElement(
@@ -637,7 +748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Dots;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -773,8 +884,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = FadeSlides;
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports) {
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 
@@ -783,6 +894,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+	var _events = __webpack_require__(6);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1019,7 +1132,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = SliderApi;
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1040,13 +1153,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _sliderApi = __webpack_require__(12);
+	var _sliderApi = __webpack_require__(13);
 
 	var _sliderApi2 = _interopRequireDefault(_sliderApi);
 
-	var _sanitizeProps = __webpack_require__(6);
+	var _sanitizeProps = __webpack_require__(7);
 
 	var _sanitizeProps2 = _interopRequireDefault(_sanitizeProps);
+
+	var _events = __webpack_require__(6);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1060,19 +1175,44 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _inherits(Slider, _Component);
 
 	  function Slider() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
 	    _classCallCheck(this, Slider);
 
-	    return _possibleConstructorReturn(this, (Slider.__proto__ || Object.getPrototypeOf(Slider)).apply(this, arguments));
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Slider.__proto__ || Object.getPrototypeOf(Slider)).call.apply(_ref, [this].concat(args))), _this), _this.updateContainerSize = function () {
+	      var _this$refs$container = _this.refs.container,
+	          offsetWidth = _this$refs$container.offsetWidth,
+	          offsetHeight = _this$refs$container.offsetHeight;
+
+	      _this.api.updateContainer(offsetWidth, offsetHeight);
+	      console.log('update container size');
+	    }, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
 	  _createClass(Slider, [{
 	    key: 'componentDidMount',
 	    value: function componentDidMount() {
-	      var _refs$container = this.refs.container,
-	          offsetWidth = _refs$container.offsetWidth,
-	          offsetHeight = _refs$container.offsetHeight;
-
-	      this.api.updateContainer(offsetWidth, offsetHeight);
+	      (0, _events.listen)(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
+	      this.updateContainerSize();
+	    }
+	  }, {
+	    key: 'componentWillUnmount',
+	    value: function componentWillUnmount() {
+	      unlisten(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
+	    }
+	  }, {
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      var currentProps = this.props;
+	      if (prevProps.forceContainerUpdate !== currentProps.forceContainerUpdate) {
+	        this.updateContainerSize();
+	      }
 	    }
 	  }, {
 	    key: 'buildNewApi',
@@ -1140,6 +1280,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  touchMove: _propTypes2.default.bool,
 	  autoPlay: _propTypes2.default.bool,
 	  autoPlaySpeed: _propTypes2.default.number,
+	  forceContainerUpdate: _propTypes2.default.any,
 
 	  // event handlers
 	  beforeChange: _propTypes2.default.func,
@@ -1163,7 +1304,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Slider;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1326,7 +1467,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Slides;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports) {
 
 	/*
@@ -1422,7 +1563,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -1436,7 +1577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	if ((undefined) !== 'production') {
 	  var invariant = __webpack_require__(4);
-	  var warning = __webpack_require__(7);
+	  var warning = __webpack_require__(8);
 	  var ReactPropTypesSecret = __webpack_require__(5);
 	  var loggedTypeFailures = {};
 	}
@@ -1487,7 +1628,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -1551,7 +1692,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -1565,11 +1706,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var emptyFunction = __webpack_require__(3);
 	var invariant = __webpack_require__(4);
-	var warning = __webpack_require__(7);
-	var assign = __webpack_require__(15);
+	var warning = __webpack_require__(8);
+	var assign = __webpack_require__(16);
 
 	var ReactPropTypesSecret = __webpack_require__(5);
-	var checkPropTypes = __webpack_require__(16);
+	var checkPropTypes = __webpack_require__(17);
 
 	module.exports = function(isValidElement, throwOnDirectAccess) {
 	  /* global Symbol */

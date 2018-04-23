@@ -1,3 +1,5 @@
+import { listen, unlisten } from "./helpers/events";
+
 export default class SliderApi {
   constructor(config) {
     this.initialized = false;
@@ -177,7 +179,6 @@ export default class SliderApi {
     }
     this.resetTimeoutId = setTimeout(() => this.goTo(slide, true), this.transitionSpeed);
   }
-
 
   triggerChange() {
     const listeners = this.listeners;

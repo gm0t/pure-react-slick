@@ -35,6 +35,11 @@ export default class Basic extends Component {
           <BasicSlides />
           <Next />
           <CDots />
+          <Dots>
+            {
+              ({ activeDot, dotsCount }) => <div>Current slide is: <b>{activeDot + 1} of {dotsCount}</b></div>
+            }
+          </Dots>
         </Slider>
         <hr/>
         <h2>Multiple slides with slidesToScroll</h2>
