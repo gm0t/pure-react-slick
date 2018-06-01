@@ -2,6 +2,20 @@ import React, { Component, Children, cloneElement } from 'react';
 import PropTypes from "prop-types";
 // TODO: rename to swipe-slides
 
+const isChanged = (a, b) => {
+  if (a.length !== b.length) {
+    return true;
+  }
+
+  for (let i = 0, l = a.length; i < l; i += 1) {
+    if (a[i] !== b[i]) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
 export default class Slides extends Component {
   static propTypes = {
   };
@@ -28,6 +42,15 @@ export default class Slides extends Component {
     this.setState(this.context.getState());
     this.context.updateSlides(this.props.children);
     this.unbind = this.context.listen(state => this.setState(state));
+  }
+
+  componentWillReceiveProps(nprops) {
+    const oldKeys = Children.toArray(this.props.children).map(child => child.key);
+    const newKeys = Children.toArray(nprops.children).map(child => child.key);
+    if (isChanged(oldKeys, newKeys)) {
+      console.log("update slides:", oldKeys, newKeys);
+      this.context.updateSlides(nrops.children);
+    }
   }
 
   componentWillUnmount() {
@@ -84,7 +107,7 @@ export default class Slides extends Component {
     }
 
     return (
-      <div {...this.props} style={style}>
+    <div {...this.props} style={style} data-react-slip="slides">
         {beforeClones}
         {children.map((slide, i) => this.renderSlide(slideWidth, slide, i), this)}
         {afterClones}

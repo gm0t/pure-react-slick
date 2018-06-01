@@ -4,6 +4,10 @@
   display: block;
   height: 100px;
 
+  &_varied-height {
+    height: auto;
+  }
+
   &_horizontal {
     padding-bottom: 40px; //for dots
   }
@@ -31,7 +35,6 @@
 
     }
   }
-
 
   &_fade {
     .slides__item {
@@ -71,13 +74,21 @@
     font-size: 30px;
     font-weight: bold;
 
+    .slider_horizontal & {
+      height: 100%;
+      float: left;
+    }
+
     .slider_vertical & {
 
     }
 
-    .slider_horizontal & {
-        height: 100%;
-        float: left;
+    .slider_varied-height & {
+      background: grey;
+      height: 150px;
+      &_sm { height: 100px }
+      &_l { height: 200px; }
+      &_xl { height: 250px; }
     }
   }
 }

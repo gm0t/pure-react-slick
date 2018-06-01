@@ -1,5 +1,3 @@
-import { listen, unlisten } from "./helpers/events";
-
 export default class SliderApi {
   constructor(config) {
     this.initialized = false;
@@ -13,7 +11,7 @@ export default class SliderApi {
     return () => {
       this.listeners.splice(this.listeners.indexOf(cb), 1);
     }
-  }
+  };
 
   offset() {
     let slideSize = (this.verical ? this.slideHeight : this.slideWidth);
@@ -60,7 +58,7 @@ export default class SliderApi {
       nextAllowed: this.isNextAllowed(),
       prevAllowed: this.isPrevAllowed()
     }
-  }
+  };
 
   isInitialized = () => {
     return (
@@ -68,7 +66,7 @@ export default class SliderApi {
       && this.containerWidth !== void 0
       && this.slidesCount !== void 0
     );
-  }
+  };
 
   /////////
   // API //
@@ -137,7 +135,7 @@ export default class SliderApi {
     if (!this.isNextAllowed()) {
       return false;
     }
-
+    clearTimeout(this.resetTimeoutId);
     const {currentSlide, slidesToShow, slidesToScroll, slidesCount} = this;
     let slide = currentSlide + slidesToScroll;
     if (!this.infinite) {
@@ -145,7 +143,11 @@ export default class SliderApi {
     }
 
     if (slide >= slidesCount) {
-      this.resetOnAnimationComplete(slide - slidesCount);
+      if (slide >= slidesCount + slidesToShow) {
+        slide = 0;
+      } else {
+        this.resetOnAnimationComplete(slide - slidesCount);
+      }
     } else if ((slide + slidesToScroll >= slidesCount) && (currentSlide !== slidesCount - slidesToShow)) {
       slide = slidesCount - slidesToShow;
     }
@@ -162,11 +164,16 @@ export default class SliderApi {
       return false;
     }
 
-    const {currentSlide, slidesToScroll, slidesCount} = this;
+    clearTimeout(this.resetTimeoutId);
+    const {currentSlide, slidesToScroll, slidesCount, slidesToShow} = this;
     let slide = currentSlide - slidesToScroll;
 
     if (this.infinite && slide < 0) {
-      this.resetOnAnimationComplete(slidesCount + slide);
+      if (slide < -slidesToShow) {
+        slide = slidesCount;
+      } else {
+        this.resetOnAnimationComplete(slidesCount + slide);
+      }
     }
 
     return this.goTo(slide);
@@ -177,7 +184,6 @@ export default class SliderApi {
   /////////////
   resetOnAnimationComplete(slide) {
     if (this.resetTimeoutId) {
-      // wow... that's bad!
       clearTimeout(this.resetTimeoutId);
     }
     this.resetTimeoutId = setTimeout(() => this.goTo(slide, true), this.transitionSpeed);
