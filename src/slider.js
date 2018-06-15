@@ -24,6 +24,27 @@ const findActiveSlides = (slides, params) => {
   return active;
 };
 
+const propsToRemove = [
+  'infinite',
+  'slidesToShow',
+  'slidesToScroll',
+  'vertical',
+  'variedHeight',
+  'transitionSpeed',
+  'transitionTimingFn',
+  'swipe',
+  'draggable',
+  'edgeFriction',
+  'touchThreshold',
+  'touchMove',
+  'autoPlay',
+  'autoPlaySpeed',
+  'containerCheckInterval',
+  'forceContainerUpdate',
+  'beforeChange',
+  'afterChange'
+];
+
 export default class Slider extends Component {
   static childContextTypes = {
     getState: PropTypes.func,
@@ -89,9 +110,11 @@ export default class Slider extends Component {
   updateContainerHeightFromSlide = () => {
     const { container } = this;
     const { initialized } = this.state;
-    if (!container || !initialized) {
+    const { variedHeight } = this.props;
+    if (!container || !initialized || !variedHeight) {
       return;
     }
+
     const slides = container.querySelector('[data-react-slip="slides"]');
     if (!slides) {
       return;
@@ -177,7 +200,8 @@ export default class Slider extends Component {
   }
 
   render() {
-    const divProps = sanitizeProps(this.props, Slider.propTypes);
+    const divProps = sanitizeProps(this.props, propsToRemove);
+
     return (
       <div {...divProps} ref={this.bindContainer}>
         {this.props.children}

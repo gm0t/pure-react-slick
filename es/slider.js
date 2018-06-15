@@ -34,6 +34,32 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var findActiveSlides = function findActiveSlides(slides, params) {
+  var currentSlide = params.currentSlide,
+      slidesToShow = params.slidesToShow,
+      slidesToScroll = params.slidesToScroll,
+      infinite = params.infinite;
+
+  var idx = currentSlide;
+  if (infinite) {
+    idx += Math.max(slidesToShow, slidesToScroll);
+  }
+
+  var active = [];
+  var indicies = [];
+  for (var i = 0; i < slidesToShow; i += 1) {
+    if (i + idx >= slides.length) {
+      idx = infinite ? slidesToShow : 0;
+    }
+    active.push(slides[idx + i]);
+    indicies.push(idx + i);
+  }
+
+  return active;
+};
+
+var propsToRemove = ['infinite', 'slidesToShow', 'slidesToScroll', 'vertical', 'variedHeight', 'transitionSpeed', 'transitionTimingFn', 'swipe', 'draggable', 'edgeFriction', 'touchThreshold', 'touchMove', 'autoPlay', 'autoPlaySpeed', 'containerCheckInterval', 'forceContainerUpdate', 'beforeChange', 'afterChange'];
+
 var Slider = function (_Component) {
   _inherits(Slider, _Component);
 
@@ -48,10 +74,54 @@ var Slider = function (_Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Slider.__proto__ || Object.getPrototypeOf(Slider)).call.apply(_ref, [this].concat(args))), _this), _this.updateContainerSize = function () {
-      var _this$refs$container = _this.refs.container,
-          offsetWidth = _this$refs$container.offsetWidth,
-          offsetHeight = _this$refs$container.offsetHeight;
+    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Slider.__proto__ || Object.getPrototypeOf(Slider)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this.bindContainer = function (el) {
+      _this.container = el;
+    }, _this.onApiChange = function (state) {
+      _this.setState(state, _this.updateContainerHeightFromSlide);
+    }, _this.updateContainerHeightFromSlide = function () {
+      var _this2 = _this,
+          container = _this2.container;
+      var initialized = _this.state.initialized;
+      var variedHeight = _this.props.variedHeight;
+
+      if (!container || !initialized || !variedHeight) {
+        return;
+      }
+
+      var slides = container.querySelector('[data-react-slip="slides"]');
+      if (!slides) {
+        return;
+      }
+      var activeSlides = findActiveSlides(slides.children, _this.state);
+      var maxHeight = -Infinity;
+      for (var i = 0, l = activeSlides.length; i < l; i += 1) {
+        maxHeight = Math.max(activeSlides[i].offsetHeight, maxHeight);
+      }
+
+      if (maxHeight <= 0) {
+        return;
+      }
+
+      var style = container.getAttribute('style') || '';
+      if (style.indexOf('height:') === -1) {
+        container.setAttribute('style', 'height: ' + maxHeight + 'px; ' + style);
+        return;
+      }
+      container.setAttribute('style', style.replace(/height:\s?[^;]+;?/gi, 'height: ' + maxHeight + 'px;'));
+    }, _this.updateContainerSize = function () {
+      if (!_this.container) {
+        return;
+      }
+
+      var variedHeight = _this.props.variedHeight;
+      var _this3 = _this,
+          container = _this3.container;
+
+      if (variedHeight) {
+        _this.updateContainerHeightFromSlide();
+      }
+      var offsetWidth = container.offsetWidth,
+          offsetHeight = container.offsetHeight;
 
       _this.api.updateContainer(offsetWidth, offsetHeight);
     }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -70,6 +140,9 @@ var Slider = function (_Component) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       window.clearInterval(this.containerWatchInterval);
+      if (this.unbind) {
+        this.unbind();
+      }
       (0, _events.unlisten)(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
     }
   }, {
@@ -83,7 +156,9 @@ var Slider = function (_Component) {
   }, {
     key: 'buildNewApi',
     value: function buildNewApi() {
-      return new _sliderApi2.default(this.props);
+      var api = new _sliderApi2.default(this.props);
+      this.unbind = api.listen(this.onApiChange);
+      return api;
     }
   }, {
     key: 'getChildContext',
@@ -111,10 +186,11 @@ var Slider = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      var divProps = (0, _sanitizeProps2.default)(this.props, Slider.propTypes);
+      var divProps = (0, _sanitizeProps2.default)(this.props, propsToRemove);
+
       return _react2.default.createElement(
         'div',
-        _extends({}, divProps, { ref: 'container' }),
+        _extends({}, divProps, { ref: this.bindContainer }),
         this.props.children
       );
     }
@@ -137,6 +213,7 @@ Slider.propTypes = {
   slidesToShow: _propTypes2.default.number,
   slidesToScroll: _propTypes2.default.number,
   vertical: _propTypes2.default.bool,
+  variedHeight: _propTypes2.default.bool,
   transitionSpeed: _propTypes2.default.number,
   transitionTimingFn: _propTypes2.default.string,
   swipe: _propTypes2.default.bool,
@@ -158,6 +235,7 @@ Slider.defaultProps = {
   slidesToScroll: 1,
   infinite: true,
   vertical: false,
+  variedHeight: false,
   transitionSpeed: 300,
   transitionTimingFn: 'linear',
   swipe: true,
@@ -167,6 +245,6 @@ Slider.defaultProps = {
   touchMove: true,
   autoPlay: false,
   autoPlaySpeed: 2000,
-  containerCheckInterval: 400
+  containerCheckInterval: 4000
 };
 exports.default = Slider;

@@ -11,12 +11,10 @@ var _assign2 = _interopRequireDefault(_assign);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function sanitizeProps(props, propTypes) {
+function sanitizeProps(props, propsToRemove) {
   var sanitizedProps = (0, _assign2.default)({}, props);
-  for (var prop in propTypes) {
-    if (propTypes.hasOwnProperty(prop)) {
-      delete sanitizedProps[prop];
-    }
+  for (var i = 0, l = propsToRemove.length; i < l; i += 1) {
+    delete sanitizedProps[propsToRemove[i]];
   }
 
   return sanitizedProps;

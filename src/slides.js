@@ -40,7 +40,7 @@ export default class Slides extends Component {
 
   componentDidMount() {
     this.setState(this.context.getState());
-    this.context.updateSlides(this.props.children);
+    this.context.updateSlides(Children.toArray(this.props.children));
     this.unbind = this.context.listen(state => this.setState(state));
   }
 
@@ -49,7 +49,7 @@ export default class Slides extends Component {
     const newKeys = Children.toArray(nprops.children).map(child => child.key);
     if (isChanged(oldKeys, newKeys)) {
       console.log("update slides:", oldKeys, newKeys);
-      this.context.updateSlides(nrops.children);
+      this.context.updateSlides(Children.toArray(nprops.children));
     }
   }
 

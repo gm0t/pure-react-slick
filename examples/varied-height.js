@@ -21,10 +21,19 @@ export default class VariedHeight extends Component {
   render() {
     return (
       <div>
-        <h2>Single slide</h2>
+        <h2>Multiple slides</h2>
         <Slider className="slider slider_horizontal slider_varied-height" infinite variedHeight slidesToShow={2}>
           <Prev />
           <BasicSlides />
+          <Next />
+          <CDots/>
+        </Slider>
+        <h2>Single slide</h2>
+        <Slider className="slider slider_horizontal slider_varied-height" infinite variedHeight>
+          <Prev />
+          <Slides className="slides">
+            <div className="slides__item">M</div>
+          </Slides>
           <Next />
           <CDots/>
         </Slider>

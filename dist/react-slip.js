@@ -61,7 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 	exports.Dots = exports.FadeSlides = exports.Slides = exports.Slider = exports.NextArrow = exports.PrevArrow = exports.Arrow = undefined;
 
-	var _arrows = __webpack_require__(9);
+	var _arrows = __webpack_require__(7);
 
 	Object.defineProperty(exports, 'Arrow', {
 	  enumerable: true,
@@ -90,11 +90,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _slides2 = _interopRequireDefault(_slides);
 
-	var _fadeSlides = __webpack_require__(12);
+	var _fadeSlides = __webpack_require__(10);
 
 	var _fadeSlides2 = _interopRequireDefault(_fadeSlides);
 
-	var _dots = __webpack_require__(11);
+	var _dots = __webpack_require__(9);
 
 	var _dots2 = _interopRequireDefault(_dots);
 
@@ -264,138 +264,6 @@ return /******/ (function(modules) { // webpackBootstrap
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
-
-	"use strict";
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.listen = listen;
-	exports.unlisten = unlisten;
-	////////////////////////////////////////////////////////////////////////////////////////
-	// Small helpers that provide an easy and effecient way to add/remove event listeners //
-	////////////////////////////////////////////////////////////////////////////////////////
-
-	var elementsWithListeners = [],
-	    registeredListeners = [];
-
-	function addListener(el, event, cb) {
-	  var idx = elementsWithListeners.indexOf(el);
-	  if (idx === -1) {
-	    idx = elementsWithListeners.length;
-	    elementsWithListeners.push(el);
-	    registeredListeners.push({ el: el, totalCount: 0 });
-	  }
-
-	  var listeners = registeredListeners[idx],
-	      listener = listeners[event];
-
-	  if (!listener) {
-	    listener = listeners[event] = { callbacks: [] };
-	    listener.cb = function (e) {
-	      for (var i = 0, l = listener.callbacks.length; i < l; i += 1) {
-	        listener.callbacks[i](e);
-	      }
-	    };
-	    listeners.totalCount += 1;
-	    listeners.el.addEventListener(event, listener.cb);
-	  }
-
-	  // just to prevent double listeners
-	  if (listener.callbacks.indexOf(cb) !== -1) {
-	    return;
-	  }
-
-	  listener.callbacks.push(cb);
-	}
-
-	function removeListener(el, event, cb) {
-	  var idx = elementsWithListeners.indexOf(el);
-	  if (idx === -1) {
-	    return;
-	  }
-
-	  var listeners = registeredListeners[idx],
-	      listener = listeners[event],
-	      callbacks = listener ? listener.callbacks : [];
-
-	  if (!listener || callbacks.indexOf(cb) === -1) {
-	    return;
-	  }
-
-	  callbacks.splice(callbacks.indexOf(cb), 1);
-	  if (callbacks.length > 0) {
-	    return;
-	  }
-
-	  listeners.el.removeEventListener(event, listener.cb);
-	  listeners.totalCount -= 1;
-	  delete listeners[event];
-
-	  if (listeners.totalCount > 0) {
-	    return;
-	  }
-
-	  elementsWithListeners.splice(idx, 1);
-	  registeredListeners.splice(idx, 1);
-	}
-
-	/**
-	 * Subscribe cb to events list
-	 * @param  {HTMLElement}   el       target element
-	 * @param  {Array}         events   array of event names
-	 * @param  {Function} cb   callback that should be called
-	 */
-	function listen(el, events, cb) {
-	  for (var i = 0, l = events.length; i < l; i += 1) {
-	    addListener(el, events[i], cb);
-	  }
-	}
-
-	/**
-	 * Unsubscribe cb from events list
-	 * @param  {HTMLElement}   el       target element
-	 * @param  {Array}         events   array of event names
-	 * @param  {Function} cb   callback that should be unsubscribed
-	 */
-
-	function unlisten(el, events, cb) {
-	  for (var i = 0, l = events.length; i < l; i += 1) {
-	    removeListener(el, events[i], cb);
-	  }
-	}
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	exports.default = sanitizeProps;
-
-	var _assign = __webpack_require__(10);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-	function sanitizeProps(props, propTypes) {
-	  var sanitizedProps = (0, _assign2.default)({}, props);
-	  for (var prop in propTypes) {
-	    if (propTypes.hasOwnProperty(prop)) {
-	      delete sanitizedProps[prop];
-	    }
-	  }
-
-	  return sanitizedProps;
-	}
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -462,7 +330,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = warning;
 
 /***/ }),
-/* 9 */
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -499,9 +367,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	  _inherits(Arrow, _Component);
 
 	  function Arrow() {
+	    var _ref;
+
+	    var _temp, _this, _ret;
+
 	    _classCallCheck(this, Arrow);
 
-	    return _possibleConstructorReturn(this, (Arrow.__proto__ || Object.getPrototypeOf(Arrow)).apply(this, arguments));
+	    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+	      args[_key] = arguments[_key];
+	    }
+
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Arrow.__proto__ || Object.getPrototypeOf(Arrow)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _temp), _possibleConstructorReturn(_this, _ret);
 	  }
 
 	  _createClass(Arrow, [{
@@ -533,6 +409,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      var isDisabled = this._isDisabled(to);
 	      var onClick = isDisabled ? null : this.context[to];
+	      var slidesCount = this.state.slidesCount;
+
+	      if (slidesCount <= 1) {
+	        return null;
+	      }
 
 	      var className = this.props.className || '';
 	      if (this._isDisabled(to)) {
@@ -581,7 +462,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 /***/ }),
-/* 10 */
+/* 8 */
 /***/ (function(module, exports) {
 
 	'use strict';
@@ -601,7 +482,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 /***/ }),
-/* 11 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -620,11 +501,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _propTypes2 = _interopRequireDefault(_propTypes);
 
-	var _sanitizeProps = __webpack_require__(7);
-
-	var _sanitizeProps2 = _interopRequireDefault(_sanitizeProps);
-
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _objectWithoutProperties(obj, keys) { var target = {}; for (var i in obj) { if (keys.indexOf(i) >= 0) continue; if (!Object.prototype.hasOwnProperty.call(obj, i)) continue; target[i] = obj[i]; } return target; }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -689,8 +568,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	          slidesToShow = _state.slidesToShow,
 	          currentSlide = _state.currentSlide,
 	          infinite = _state.infinite;
-	      var children = this.props.children;
 
+	      var _props = this.props,
+	          children = _props.children,
+	          activeClassName = _props.activeClassName,
+	          ulProps = _objectWithoutProperties(_props, ['children', 'activeClassName']);
+
+	      if (slidesCount <= 1) {
+	        return null;
+	      }
 
 	      if (currentSlide >= slidesCount) {
 	        currentSlide = currentSlide - slidesCount;
@@ -724,7 +610,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      return _react2.default.createElement(
 	        'ul',
-	        (0, _sanitizeProps2.default)(this.props, Dots.propTypes),
+	        ulProps,
 	        dots
 	      );
 	    }
@@ -748,7 +634,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = Dots;
 
 /***/ }),
-/* 12 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -884,8 +770,138 @@ return /******/ (function(modules) { // webpackBootstrap
 	exports.default = FadeSlides;
 
 /***/ }),
-/* 13 */
+/* 11 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.listen = listen;
+	exports.unlisten = unlisten;
+	////////////////////////////////////////////////////////////////////////////////////////
+	// Small helpers that provide an easy and effecient way to add/remove event listeners //
+	////////////////////////////////////////////////////////////////////////////////////////
+
+	var elementsWithListeners = [],
+	    registeredListeners = [];
+
+	function addListener(el, event, cb) {
+	  var idx = elementsWithListeners.indexOf(el);
+	  if (idx === -1) {
+	    idx = elementsWithListeners.length;
+	    elementsWithListeners.push(el);
+	    registeredListeners.push({ el: el, totalCount: 0 });
+	  }
+
+	  var listeners = registeredListeners[idx],
+	      listener = listeners[event];
+
+	  if (!listener) {
+	    listener = listeners[event] = { callbacks: [] };
+	    listener.cb = function (e) {
+	      for (var i = 0, l = listener.callbacks.length; i < l; i += 1) {
+	        listener.callbacks[i](e);
+	      }
+	    };
+	    listeners.totalCount += 1;
+	    listeners.el.addEventListener(event, listener.cb);
+	  }
+
+	  // just to prevent double listeners
+	  if (listener.callbacks.indexOf(cb) !== -1) {
+	    return;
+	  }
+
+	  listener.callbacks.push(cb);
+	}
+
+	function removeListener(el, event, cb) {
+	  var idx = elementsWithListeners.indexOf(el);
+	  if (idx === -1) {
+	    return;
+	  }
+
+	  var listeners = registeredListeners[idx],
+	      listener = listeners[event],
+	      callbacks = listener ? listener.callbacks : [];
+
+	  if (!listener || callbacks.indexOf(cb) === -1) {
+	    return;
+	  }
+
+	  callbacks.splice(callbacks.indexOf(cb), 1);
+	  if (callbacks.length > 0) {
+	    return;
+	  }
+
+	  listeners.el.removeEventListener(event, listener.cb);
+	  listeners.totalCount -= 1;
+	  delete listeners[event];
+
+	  if (listeners.totalCount > 0) {
+	    return;
+	  }
+
+	  elementsWithListeners.splice(idx, 1);
+	  registeredListeners.splice(idx, 1);
+	}
+
+	/**
+	 * Subscribe cb to events list
+	 * @param  {HTMLElement}   el       target element
+	 * @param  {Array}         events   array of event names
+	 * @param  {Function} cb   callback that should be called
+	 */
+	function listen(el, events, cb) {
+	  for (var i = 0, l = events.length; i < l; i += 1) {
+	    addListener(el, events[i], cb);
+	  }
+	}
+
+	/**
+	 * Unsubscribe cb from events list
+	 * @param  {HTMLElement}   el       target element
+	 * @param  {Array}         events   array of event names
+	 * @param  {Function} cb   callback that should be unsubscribed
+	 */
+
+	function unlisten(el, events, cb) {
+	  for (var i = 0, l = events.length; i < l; i += 1) {
+	    removeListener(el, events[i], cb);
+	  }
+	}
+
+/***/ }),
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	exports.default = sanitizeProps;
+
+	var _assign = __webpack_require__(8);
+
+	var _assign2 = _interopRequireDefault(_assign);
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function sanitizeProps(props, propsToRemove) {
+	  var sanitizedProps = (0, _assign2.default)({}, props);
+	  for (var i = 0, l = propsToRemove.length; i < l; i += 1) {
+	    delete sanitizedProps[propsToRemove[i]];
+	  }
+
+	  return sanitizedProps;
+	}
+
+/***/ }),
+/* 13 */
+/***/ (function(module, exports) {
 
 	"use strict";
 
@@ -894,8 +910,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-	var _events = __webpack_require__(6);
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1054,7 +1068,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      if (!this.isNextAllowed()) {
 	        return false;
 	      }
-
+	      clearTimeout(this.resetTimeoutId);
 	      var currentSlide = this.currentSlide,
 	          slidesToShow = this.slidesToShow,
 	          slidesToScroll = this.slidesToScroll,
@@ -1066,7 +1080,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      if (slide >= slidesCount) {
-	        this.resetOnAnimationComplete(slide - slidesCount);
+	        if (slide >= slidesCount + slidesToShow) {
+	          slide = 0;
+	        } else {
+	          this.resetOnAnimationComplete(slide - slidesCount);
+	        }
 	      } else if (slide + slidesToScroll >= slidesCount && currentSlide !== slidesCount - slidesToShow) {
 	        slide = slidesCount - slidesToShow;
 	      }
@@ -1086,14 +1104,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return false;
 	      }
 
+	      clearTimeout(this.resetTimeoutId);
 	      var currentSlide = this.currentSlide,
 	          slidesToScroll = this.slidesToScroll,
-	          slidesCount = this.slidesCount;
+	          slidesCount = this.slidesCount,
+	          slidesToShow = this.slidesToShow;
 
 	      var slide = currentSlide - slidesToScroll;
 
 	      if (this.infinite && slide < 0) {
-	        this.resetOnAnimationComplete(slidesCount + slide);
+	        if (slide < -slidesToShow) {
+	          slide = slidesCount;
+	        } else {
+	          this.resetOnAnimationComplete(slidesCount + slide);
+	        }
 	      }
 
 	      return this.goTo(slide);
@@ -1109,7 +1133,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var _this2 = this;
 
 	      if (this.resetTimeoutId) {
-	        // wow... that's bad!
 	        clearTimeout(this.resetTimeoutId);
 	      }
 	      this.resetTimeoutId = setTimeout(function () {
@@ -1160,11 +1183,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _sliderApi2 = _interopRequireDefault(_sliderApi);
 
-	var _sanitizeProps = __webpack_require__(7);
+	var _sanitizeProps = __webpack_require__(12);
 
 	var _sanitizeProps2 = _interopRequireDefault(_sanitizeProps);
 
-	var _events = __webpack_require__(6);
+	var _events = __webpack_require__(11);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1173,6 +1196,32 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+	var findActiveSlides = function findActiveSlides(slides, params) {
+	  var currentSlide = params.currentSlide,
+	      slidesToShow = params.slidesToShow,
+	      slidesToScroll = params.slidesToScroll,
+	      infinite = params.infinite;
+
+	  var idx = currentSlide;
+	  if (infinite) {
+	    idx += Math.max(slidesToShow, slidesToScroll);
+	  }
+
+	  var active = [];
+	  var indicies = [];
+	  for (var i = 0; i < slidesToShow; i += 1) {
+	    if (i + idx >= slides.length) {
+	      idx = infinite ? slidesToShow : 0;
+	    }
+	    active.push(slides[idx + i]);
+	    indicies.push(idx + i);
+	  }
+
+	  return active;
+	};
+
+	var propsToRemove = ['infinite', 'slidesToShow', 'slidesToScroll', 'vertical', 'variedHeight', 'transitionSpeed', 'transitionTimingFn', 'swipe', 'draggable', 'edgeFriction', 'touchThreshold', 'touchMove', 'autoPlay', 'autoPlaySpeed', 'containerCheckInterval', 'forceContainerUpdate', 'beforeChange', 'afterChange'];
 
 	var Slider = function (_Component) {
 	  _inherits(Slider, _Component);
@@ -1188,10 +1237,54 @@ return /******/ (function(modules) { // webpackBootstrap
 	      args[_key] = arguments[_key];
 	    }
 
-	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Slider.__proto__ || Object.getPrototypeOf(Slider)).call.apply(_ref, [this].concat(args))), _this), _this.updateContainerSize = function () {
-	      var _this$refs$container = _this.refs.container,
-	          offsetWidth = _this$refs$container.offsetWidth,
-	          offsetHeight = _this$refs$container.offsetHeight;
+	    return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_ref = Slider.__proto__ || Object.getPrototypeOf(Slider)).call.apply(_ref, [this].concat(args))), _this), _this.state = {}, _this.bindContainer = function (el) {
+	      _this.container = el;
+	    }, _this.onApiChange = function (state) {
+	      _this.setState(state, _this.updateContainerHeightFromSlide);
+	    }, _this.updateContainerHeightFromSlide = function () {
+	      var _this2 = _this,
+	          container = _this2.container;
+	      var initialized = _this.state.initialized;
+	      var variedHeight = _this.props.variedHeight;
+
+	      if (!container || !initialized || !variedHeight) {
+	        return;
+	      }
+
+	      var slides = container.querySelector('[data-react-slip="slides"]');
+	      if (!slides) {
+	        return;
+	      }
+	      var activeSlides = findActiveSlides(slides.children, _this.state);
+	      var maxHeight = -Infinity;
+	      for (var i = 0, l = activeSlides.length; i < l; i += 1) {
+	        maxHeight = Math.max(activeSlides[i].offsetHeight, maxHeight);
+	      }
+
+	      if (maxHeight <= 0) {
+	        return;
+	      }
+
+	      var style = container.getAttribute('style') || '';
+	      if (style.indexOf('height:') === -1) {
+	        container.setAttribute('style', 'height: ' + maxHeight + 'px; ' + style);
+	        return;
+	      }
+	      container.setAttribute('style', style.replace(/height:\s?[^;]+;?/gi, 'height: ' + maxHeight + 'px;'));
+	    }, _this.updateContainerSize = function () {
+	      if (!_this.container) {
+	        return;
+	      }
+
+	      var variedHeight = _this.props.variedHeight;
+	      var _this3 = _this,
+	          container = _this3.container;
+
+	      if (variedHeight) {
+	        _this.updateContainerHeightFromSlide();
+	      }
+	      var offsetWidth = container.offsetWidth,
+	          offsetHeight = container.offsetHeight;
 
 	      _this.api.updateContainer(offsetWidth, offsetHeight);
 	    }, _temp), _possibleConstructorReturn(_this, _ret);
@@ -1210,6 +1303,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      window.clearInterval(this.containerWatchInterval);
+	      if (this.unbind) {
+	        this.unbind();
+	      }
 	      (0, _events.unlisten)(window, ['resize', 'pageshow', 'load'], this.updateContainerSize);
 	    }
 	  }, {
@@ -1223,7 +1319,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'buildNewApi',
 	    value: function buildNewApi() {
-	      return new _sliderApi2.default(this.props);
+	      var api = new _sliderApi2.default(this.props);
+	      this.unbind = api.listen(this.onApiChange);
+	      return api;
 	    }
 	  }, {
 	    key: 'getChildContext',
@@ -1251,10 +1349,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var divProps = (0, _sanitizeProps2.default)(this.props, Slider.propTypes);
+	      var divProps = (0, _sanitizeProps2.default)(this.props, propsToRemove);
+
 	      return _react2.default.createElement(
 	        'div',
-	        _extends({}, divProps, { ref: 'container' }),
+	        _extends({}, divProps, { ref: this.bindContainer }),
 	        this.props.children
 	      );
 	    }
@@ -1277,6 +1376,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  slidesToShow: _propTypes2.default.number,
 	  slidesToScroll: _propTypes2.default.number,
 	  vertical: _propTypes2.default.bool,
+	  variedHeight: _propTypes2.default.bool,
 	  transitionSpeed: _propTypes2.default.number,
 	  transitionTimingFn: _propTypes2.default.string,
 	  swipe: _propTypes2.default.bool,
@@ -1298,6 +1398,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  slidesToScroll: 1,
 	  infinite: true,
 	  vertical: false,
+	  variedHeight: false,
 	  transitionSpeed: 300,
 	  transitionTimingFn: 'linear',
 	  swipe: true,
@@ -1307,7 +1408,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  touchMove: true,
 	  autoPlay: false,
 	  autoPlaySpeed: 2000,
-	  containerCheckInterval: 400
+	  containerCheckInterval: 4000
 	};
 	exports.default = Slider;
 
@@ -1315,7 +1416,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1343,6 +1444,20 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	// TODO: rename to swipe-slides
 
+	var isChanged = function isChanged(a, b) {
+	  if (a.length !== b.length) {
+	    return true;
+	  }
+
+	  for (var i = 0, l = a.length; i < l; i += 1) {
+	    if (a[i] !== b[i]) {
+	      return true;
+	    }
+	  }
+
+	  return false;
+	};
+
 	var Slides = function (_Component) {
 	  _inherits(Slides, _Component);
 
@@ -1356,23 +1471,37 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(Slides, [{
-	    key: 'componentDidUpdate',
+	    key: "componentDidUpdate",
 	    value: function componentDidUpdate() {
 	      // this.update
 	    }
 	  }, {
-	    key: 'componentDidMount',
+	    key: "componentDidMount",
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
 	      this.setState(this.context.getState());
-	      this.context.updateSlides(this.props.children);
+	      this.context.updateSlides(_react.Children.toArray(this.props.children));
 	      this.unbind = this.context.listen(function (state) {
 	        return _this2.setState(state);
 	      });
 	    }
 	  }, {
-	    key: 'componentWillUnmount',
+	    key: "componentWillReceiveProps",
+	    value: function componentWillReceiveProps(nprops) {
+	      var oldKeys = _react.Children.toArray(this.props.children).map(function (child) {
+	        return child.key;
+	      });
+	      var newKeys = _react.Children.toArray(nprops.children).map(function (child) {
+	        return child.key;
+	      });
+	      if (isChanged(oldKeys, newKeys)) {
+	        console.log("update slides:", oldKeys, newKeys);
+	        this.context.updateSlides(_react.Children.toArray(nprops.children));
+	      }
+	    }
+	  }, {
+	    key: "componentWillUnmount",
 	    value: function componentWillUnmount() {
 	      if (this.unbind) {
 	        this.unbind();
@@ -1382,7 +1511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // helpers
 
 	  }, {
-	    key: 'buildTrackTransform',
+	    key: "buildTrackTransform",
 	    value: function buildTrackTransform() {
 	      var _state = this.state,
 	          vertical = _state.vertical,
@@ -1391,19 +1520,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return 'translate3d(' + (vertical ? '0px, ' + offset + 'px' : offset + 'px, 0px') + ', 0px)';
 	    }
 	  }, {
-	    key: 'buildTrackTransition',
+	    key: "buildTrackTransition",
 	    value: function buildTrackTransition() {
 	      if (!this.state.animate) {
 	        return '';
 	      }
 
-	      return 'transform ' + this.state.transitionSpeed / 1000 + 's ease';
+	      return "transform " + this.state.transitionSpeed / 1000 + "s ease";
 	    }
 
 	    // renderers
 
 	  }, {
-	    key: 'renderSlide',
+	    key: "renderSlide",
 	    value: function renderSlide(slideWidth, slide, key) {
 	      var style = slide.props.style || {};
 	      style.width = slideWidth + 'px';
@@ -1411,7 +1540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return (0, _react.cloneElement)(slide, { key: key, style: style });
 	    }
 	  }, {
-	    key: 'renderClones',
+	    key: "renderClones",
 	    value: function renderClones(pos, slides, width) {
 	      var _this3 = this;
 
@@ -1420,7 +1549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	  }, {
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
 	      var _this4 = this;
 
@@ -1451,8 +1580,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return _react2.default.createElement(
-	        'div',
-	        _extends({}, this.props, { style: style }),
+	        "div",
+	        _extends({}, this.props, { style: style, "data-react-slip": "slides" }),
 	        beforeClones,
 	        children.map(function (slide, i) {
 	          return _this4.renderSlide(slideWidth, slide, i);
@@ -1585,7 +1714,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	if ((undefined) !== 'production') {
 	  var invariant = __webpack_require__(4);
-	  var warning = __webpack_require__(8);
+	  var warning = __webpack_require__(6);
 	  var ReactPropTypesSecret = __webpack_require__(5);
 	  var loggedTypeFailures = {};
 	}
@@ -1714,7 +1843,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var emptyFunction = __webpack_require__(3);
 	var invariant = __webpack_require__(4);
-	var warning = __webpack_require__(8);
+	var warning = __webpack_require__(6);
 	var assign = __webpack_require__(16);
 
 	var ReactPropTypesSecret = __webpack_require__(5);

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from "prop-types";
-import sanitizeProps from './sanitize-props';
 
 export default class Dots extends Component {
 
@@ -47,7 +46,11 @@ export default class Dots extends Component {
 
   render() {
     let {slidesCount, slidesToScroll, slidesToShow, currentSlide, infinite} = this.state;
-    const { children } = this.props;
+    const { children, activeClassName, ...ulProps } = this.props;
+
+    if (slidesCount <= 1) {
+      return null;
+    }
 
     if (currentSlide >= slidesCount) {
       currentSlide = currentSlide - slidesCount;
@@ -64,7 +67,6 @@ export default class Dots extends Component {
       dotsCount = 1 + Math.ceil((slidesCount - slidesToShow) / slidesToScroll);
     }
 
-
     let dots = [], isActive, activeDot = false;
     for (let i = 0; i < dotsCount; i += 1) {
       isActive = activeDot === false && (currentSlide >= i * slidesToScroll && currentSlide < ((i + 1) * slidesToScroll))
@@ -79,7 +81,7 @@ export default class Dots extends Component {
     }
 
     return (
-      <ul {...sanitizeProps(this.props, Dots.propTypes)} >
+      <ul {...ulProps} >
         {dots}
       </ul>
     );

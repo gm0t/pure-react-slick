@@ -6,18 +6,20 @@ export class Arrow extends Component {
     to: PropTypes.oneOf(['prev', 'next']).isRequired,
     className: PropTypes.string,
     disabledClassName: PropTypes.string
-  }
+  };
 
   static contextTypes = {
     listen: PropTypes.func.isRequired,
     next: PropTypes.func.isRequired,
     prev: PropTypes.func.isRequired
-  }
+  };
 
   static defaultProps = {
     className: 'slick-arrow',
     disabledClassName: 'disabled'
-  }
+  };
+
+  state = {};
 
   _isDisabled(to) {
     return !this.state || !this.state[to + 'Allowed'];
@@ -28,13 +30,17 @@ export class Arrow extends Component {
   }
 
   componentWillUnmount() {
-    this.unbind()
+    this.unbind();
   }
 
   render() {
     const { to, children, disabledClassName } = this.props;
     const isDisabled = this._isDisabled(to);
     const onClick = isDisabled ? null : this.context[to];
+    const { slidesCount } = this.state;
+    if (slidesCount <= 1) {
+      return null;
+    }
 
     var className = this.props.className || '';
     if (this._isDisabled(to)) {
