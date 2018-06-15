@@ -1,4 +1,7 @@
 export default class SliderApi {
+  currentSlide = 0;
+  lastSlide = 0;
+
   constructor(config) {
     this.initialized = false;
     this.animate = true;
@@ -94,8 +97,6 @@ export default class SliderApi {
 
   configure(config) {
     this.infinite = config.infinite;
-    this.currentSlide = config.currentSlide || 0;
-    this.lastSlide = this.currentSlide;
     this.slidesToShow = config.slidesToShow || 1;
     this.slidesToScroll = config.slidesToScroll || 1;
     this.transitionSpeed = config.transitionSpeed;

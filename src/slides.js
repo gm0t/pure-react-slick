@@ -48,7 +48,6 @@ export default class Slides extends Component {
     const oldKeys = Children.toArray(this.props.children).map(child => child.key);
     const newKeys = Children.toArray(nprops.children).map(child => child.key);
     if (isChanged(oldKeys, newKeys)) {
-      console.log("update slides:", oldKeys, newKeys);
       this.context.updateSlides(Children.toArray(nprops.children));
     }
   }
