@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -8,11 +8,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = require("react");
+var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _propTypes = require("prop-types");
+var _propTypes = require('prop-types');
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
@@ -53,12 +53,12 @@ var Slides = function (_Component) {
   }
 
   _createClass(Slides, [{
-    key: "componentDidUpdate",
+    key: 'componentDidUpdate',
     value: function componentDidUpdate() {
       // this.update
     }
   }, {
-    key: "componentDidMount",
+    key: 'componentDidMount',
     value: function componentDidMount() {
       var _this2 = this;
 
@@ -69,7 +69,7 @@ var Slides = function (_Component) {
       });
     }
   }, {
-    key: "componentWillReceiveProps",
+    key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nprops) {
       var oldKeys = _react.Children.toArray(this.props.children).map(function (child) {
         return child.key;
@@ -78,12 +78,11 @@ var Slides = function (_Component) {
         return child.key;
       });
       if (isChanged(oldKeys, newKeys)) {
-        console.log("update slides:", oldKeys, newKeys);
         this.context.updateSlides(_react.Children.toArray(nprops.children));
       }
     }
   }, {
-    key: "componentWillUnmount",
+    key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       if (this.unbind) {
         this.unbind();
@@ -93,7 +92,7 @@ var Slides = function (_Component) {
     // helpers
 
   }, {
-    key: "buildTrackTransform",
+    key: 'buildTrackTransform',
     value: function buildTrackTransform() {
       var _state = this.state,
           vertical = _state.vertical,
@@ -102,19 +101,19 @@ var Slides = function (_Component) {
       return 'translate3d(' + (vertical ? '0px, ' + offset + 'px' : offset + 'px, 0px') + ', 0px)';
     }
   }, {
-    key: "buildTrackTransition",
+    key: 'buildTrackTransition',
     value: function buildTrackTransition() {
       if (!this.state.animate) {
         return '';
       }
 
-      return "transform " + this.state.transitionSpeed / 1000 + "s ease";
+      return 'transform ' + this.state.transitionSpeed / 1000 + 's ease';
     }
 
     // renderers
 
   }, {
-    key: "renderSlide",
+    key: 'renderSlide',
     value: function renderSlide(slideWidth, slide, key) {
       var style = slide.props.style || {};
       style.width = slideWidth + 'px';
@@ -122,7 +121,7 @@ var Slides = function (_Component) {
       return (0, _react.cloneElement)(slide, { key: key, style: style });
     }
   }, {
-    key: "renderClones",
+    key: 'renderClones',
     value: function renderClones(pos, slides, width) {
       var _this3 = this;
 
@@ -131,7 +130,7 @@ var Slides = function (_Component) {
       });
     }
   }, {
-    key: "render",
+    key: 'render',
     value: function render() {
       var _this4 = this;
 
@@ -162,8 +161,8 @@ var Slides = function (_Component) {
       }
 
       return _react2.default.createElement(
-        "div",
-        _extends({}, this.props, { style: style, "data-react-slip": "slides" }),
+        'div',
+        _extends({}, this.props, { style: style, 'data-react-slip': 'slides' }),
         beforeClones,
         children.map(function (slide, i) {
           return _this4.renderSlide(slideWidth, slide, i);

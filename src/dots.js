@@ -39,7 +39,7 @@ export default class Dots extends Component {
 
     return (
       <li key={i} onClick={() => this.context.goTo(i * toScroll)} className={className}>
-        <button>{i}</button>
+        <button>{i + 1}</button>
       </li>
     );
   }

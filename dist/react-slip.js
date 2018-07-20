@@ -555,7 +555,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        _react2.default.createElement(
 	          'button',
 	          null,
-	          i
+	          i + 1
 	        )
 	      );
 	    }
@@ -919,6 +919,9 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    _classCallCheck(this, SliderApi);
 
+	    this.currentSlide = 0;
+	    this.lastSlide = 0;
+
 	    this.listen = function (cb) {
 	      _this.listeners.push(cb);
 	      return function () {
@@ -1019,8 +1022,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: "configure",
 	    value: function configure(config) {
 	      this.infinite = config.infinite;
-	      this.currentSlide = config.currentSlide || 0;
-	      this.lastSlide = this.currentSlide;
 	      this.slidesToShow = config.slidesToShow || 1;
 	      this.slidesToScroll = config.slidesToScroll || 1;
 	      this.transitionSpeed = config.transitionSpeed;
@@ -1416,7 +1417,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -1471,12 +1472,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  _createClass(Slides, [{
-	    key: "componentDidUpdate",
+	    key: 'componentDidUpdate',
 	    value: function componentDidUpdate() {
 	      // this.update
 	    }
 	  }, {
-	    key: "componentDidMount",
+	    key: 'componentDidMount',
 	    value: function componentDidMount() {
 	      var _this2 = this;
 
@@ -1487,7 +1488,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	  }, {
-	    key: "componentWillReceiveProps",
+	    key: 'componentWillReceiveProps',
 	    value: function componentWillReceiveProps(nprops) {
 	      var oldKeys = _react.Children.toArray(this.props.children).map(function (child) {
 	        return child.key;
@@ -1496,12 +1497,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	        return child.key;
 	      });
 	      if (isChanged(oldKeys, newKeys)) {
-	        console.log("update slides:", oldKeys, newKeys);
 	        this.context.updateSlides(_react.Children.toArray(nprops.children));
 	      }
 	    }
 	  }, {
-	    key: "componentWillUnmount",
+	    key: 'componentWillUnmount',
 	    value: function componentWillUnmount() {
 	      if (this.unbind) {
 	        this.unbind();
@@ -1511,7 +1511,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // helpers
 
 	  }, {
-	    key: "buildTrackTransform",
+	    key: 'buildTrackTransform',
 	    value: function buildTrackTransform() {
 	      var _state = this.state,
 	          vertical = _state.vertical,
@@ -1520,19 +1520,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return 'translate3d(' + (vertical ? '0px, ' + offset + 'px' : offset + 'px, 0px') + ', 0px)';
 	    }
 	  }, {
-	    key: "buildTrackTransition",
+	    key: 'buildTrackTransition',
 	    value: function buildTrackTransition() {
 	      if (!this.state.animate) {
 	        return '';
 	      }
 
-	      return "transform " + this.state.transitionSpeed / 1000 + "s ease";
+	      return 'transform ' + this.state.transitionSpeed / 1000 + 's ease';
 	    }
 
 	    // renderers
 
 	  }, {
-	    key: "renderSlide",
+	    key: 'renderSlide',
 	    value: function renderSlide(slideWidth, slide, key) {
 	      var style = slide.props.style || {};
 	      style.width = slideWidth + 'px';
@@ -1540,7 +1540,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return (0, _react.cloneElement)(slide, { key: key, style: style });
 	    }
 	  }, {
-	    key: "renderClones",
+	    key: 'renderClones',
 	    value: function renderClones(pos, slides, width) {
 	      var _this3 = this;
 
@@ -1549,7 +1549,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      });
 	    }
 	  }, {
-	    key: "render",
+	    key: 'render',
 	    value: function render() {
 	      var _this4 = this;
 
@@ -1580,8 +1580,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      return _react2.default.createElement(
-	        "div",
-	        _extends({}, this.props, { style: style, "data-react-slip": "slides" }),
+	        'div',
+	        _extends({}, this.props, { style: style, 'data-react-slip': 'slides' }),
 	        beforeClones,
 	        children.map(function (slide, i) {
 	          return _this4.renderSlide(slideWidth, slide, i);

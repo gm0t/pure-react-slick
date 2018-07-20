@@ -1,6 +1,6 @@
 {
   "name": "react-slip",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "Pure React carousel",
   "main": "lib/index.js",
   "jsnext:main": "es/index",
